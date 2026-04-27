@@ -26,7 +26,7 @@ Create `server/.env` from `server/.env.example` and set:
 
 - `MONGO_URI`
 - `MONGO_DB_NAME`
-- `CORS_ORIGIN=http://localhost:6969,https://citrus-chi.vercel.app`
+- `CORS_ORIGIN=http://localhost:6969,https://citrus-51i3nzocv-harshpathak629-gmailcoms-projects.vercel.app`
 - Firebase Admin credentials (one method):
 
 Method A (recommended):
@@ -87,11 +87,11 @@ npm run dev
 Use these production URLs:
 
 - Backend: `https://citrus-1-1g0z.onrender.com`
-- Frontend: `https://citrus-chi.vercel.app`
+- Frontend: `https://citrus-51i3nzocv-harshpathak629-gmailcoms-projects.vercel.app`
 
 Render environment variables:
 
-- `CORS_ORIGIN=http://localhost:6969,https://citrus-chi.vercel.app`
+- `CORS_ORIGIN=http://localhost:6969,https://citrus-51i3nzocv-harshpathak629-gmailcoms-projects.vercel.app`
 - `MONGO_URI=...`
 - `MONGO_DB_NAME=...`
 - Firebase Admin env vars (`FIREBASE_SERVICE_ACCOUNT_JSON` or field-based vars)
