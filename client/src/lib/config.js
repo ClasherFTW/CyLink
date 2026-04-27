@@ -1,5 +1,4 @@
 const DEFAULT_DEV_API_URL = "http://localhost:5000";
-const DEFAULT_PROD_API_URL = "https://citrus-1-1g0z.onrender.com";
 
 export function getApiBaseUrl() {
   const fromEnv = import.meta.env.VITE_API_BASE_URL;
@@ -8,9 +7,10 @@ export function getApiBaseUrl() {
   }
 
   if (import.meta.env.PROD) {
-    return DEFAULT_PROD_API_URL;
+    if (typeof window !== "undefined" && window.location?.origin) {
+      return window.location.origin;
+    }
   }
 
   return DEFAULT_DEV_API_URL;
 }
-

@@ -14,16 +14,25 @@ const buildCredential = () => {
   }
 
   // Method 2: Load from FIREBASE_SERVICE_ACCOUNT_JSON env var (full JSON string)
-  if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
-    console.log("[Firebase] Initialized using FIREBASE_SERVICE_ACCOUNT_JSON env var.");
-    return admin.credential.cert(serviceAccount);
+  const rawServiceAccountJson = String(
+    process.env.FIREBASE_SERVICE_ACCOUNT_JSON || ""
+  ).trim();
+  if (rawServiceAccountJson) {
+    try {
+      const serviceAccount = JSON.parse(rawServiceAccountJson);
+      console.log("[Firebase] Initialized using FIREBASE_SERVICE_ACCOUNT_JSON env var.");
+      return admin.credential.cert(serviceAccount);
+    } catch (_error) {
+      throw new Error(
+        "[Firebase] FIREBASE_SERVICE_ACCOUNT_JSON is set but is not valid JSON."
+      );
+    }
   }
 
   // Method 3: Load from individual env var fields
-  const projectId = process.env.FIREBASE_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  const projectId = String(process.env.FIREBASE_PROJECT_ID || "").trim();
+  const clientEmail = String(process.env.FIREBASE_CLIENT_EMAIL || "").trim();
+  const privateKey = String(process.env.FIREBASE_PRIVATE_KEY || "").trim();
 
   if (projectId && clientEmail && privateKey) {
     console.log("[Firebase] Initialized using individual env var fields.");

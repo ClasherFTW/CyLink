@@ -84,26 +84,26 @@ npm run dev
 
 ## Deployment (Render + Vercel)
 
-Use these production URLs:
+Use your current production URLs:
 
-- Backend: `https://citrus-1-1g0z.onrender.com`
-- Frontend: `https://citrus-51i3nzocv-harshpathak629-gmailcoms-projects.vercel.app`
+- Backend: `https://<your-render-service>.onrender.com`
+- Frontend: `https://<your-vercel-domain>.vercel.app`
 
 Render environment variables:
 
-- `CORS_ORIGIN=http://localhost:6969,https://citrus-51i3nzocv-harshpathak629-gmailcoms-projects.vercel.app`
+- `CORS_ORIGIN=http://localhost:6969,https://<your-vercel-domain>.vercel.app`
 - `MONGO_URI=...`
 - `MONGO_DB_NAME=...`
 - Firebase Admin env vars (`FIREBASE_SERVICE_ACCOUNT_JSON` or field-based vars)
 
 Vercel environment variables:
 
-- `VITE_API_BASE_URL=https://citrus-1-1g0z.onrender.com`
+- `VITE_API_BASE_URL=https://<your-render-service>.onrender.com`
 - All `VITE_FIREBASE_*` vars
 
 Notes:
 
-- Frontend code now auto-falls back to `https://citrus-1-1g0z.onrender.com` in production if `VITE_API_BASE_URL` is missing.
+- Frontend code falls back to same-origin in production if `VITE_API_BASE_URL` is missing.
 - Always set `VITE_API_BASE_URL` explicitly in Vercel to avoid surprises across preview deployments.
 
 ## 5) Quick integration checks
