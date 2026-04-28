@@ -358,63 +358,58 @@ textarea {
 /* Landing */
 .landing-wrap {
   min-height: 100vh;
-  padding: 1rem clamp(1rem, 4vw, 2.5rem) 2.2rem;
-}
-
-.landing-top {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 0.8rem;
+  justify-content: center;
+  padding: 1.25rem;
 }
 
-.landing-top__actions {
-  display: flex;
-  gap: 0.45rem;
+.landing-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 
-.landing-hero {
-  margin-top: 3rem;
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 1rem;
-}
-
-.eyebrow {
-  margin: 0;
-  color: var(--accent);
-  letter-spacing: 0.18em;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  font-family: var(--mono);
-}
-
-.landing-hero h1 {
-  margin: 0.7rem 0 0;
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1.05;
-}
-
-.landing-hero p {
-  color: var(--text-secondary);
-  max-width: 44ch;
-}
-
-.landing-preview {
-  border: 1px solid rgba(255, 140, 0, 0.4);
+.landing-center {
+  width: min(620px, calc(100% - 1.6rem));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 12, 14, 0.6);
+  backdrop-filter: blur(5px);
   border-radius: 14px;
-  padding: 1rem;
-  background: linear-gradient(160deg, rgba(255, 140, 0, 0.14), rgba(255, 140, 0, 0.03));
+  padding: 1.3rem;
+  display: grid;
+  gap: 0.7rem;
+  place-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
-.landing-preview h3 {
-  margin-top: 0;
-}
-
-.landing-preview ul {
+.landing-center h1,
+.landing-center p {
   margin: 0;
-  padding-left: 1.2rem;
-  line-height: 1.7;
+}
+
+.landing-center h1 {
+  font-size: clamp(1.75rem, 4vw, 2.6rem);
+  line-height: 1.08;
+}
+
+.landing-center p {
+  color: var(--text-secondary);
+  max-width: 40ch;
+}
+
+.landing-center__actions {
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
 }
 
 /* Auth */
@@ -1210,8 +1205,7 @@ textarea {
 
   .stats-strip,
   .filters-grid,
-  .profile-grid,
-  .landing-hero {
+  .profile-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1243,5 +1237,13 @@ textarea {
 
   .answer-item {
     grid-template-columns: 1fr;
+  }
+
+  .landing-center {
+    padding: 1rem;
+  }
+
+  .landing-center__actions {
+    width: 100%;
   }
 }
