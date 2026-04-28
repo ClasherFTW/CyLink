@@ -1,4 +1,4 @@
-import { apiRequest, ApiClientError } from "../../lib/apiClient";
+import { apiRequest, ApiClientError, notifyAuthInvalid } from "../../lib/apiClient";
 import { getStoredToken } from "../../lib/session";
 import { getApiBaseUrl } from "../../lib/config";
 
@@ -41,6 +41,10 @@ export async function askCitrusBotStream({
       payload = await response.json();
     } catch (_error) {
       payload = null;
+    }
+
+    if (response.status === 401) {
+      notifyAuthInvalid(response.status, payload?.message || "Unauthorized.");
     }
 
     throw new ApiClientError(payload?.message || "Request failed.", {

@@ -14,6 +14,8 @@ import {
   getStoredUser,
   persistSession,
 } from "../../lib/session";
+import { getApiBaseUrl } from "../../lib/config";
+import { AUTH_INVALID_EVENT } from "../../lib/apiClient";
 import { closeSocket } from "../chat/socketClient";
 import {
   getCurrentFirebaseUser,
@@ -52,6 +54,19 @@ const resolvePreferredUsername = (firebaseUser, fallbackUsername) => {
   return "";
 };
 
+const normalizeAuthErrorMessage = (error) => {
+  const raw = String(error?.message || "").trim();
+  if (!raw) {
+    return "Could not complete backend session.";
+  }
+
+  if (/failed to fetch/i.test(raw)) {
+    return `Could not reach backend at ${getApiBaseUrl()}. Make sure server is running.`;
+  }
+
+  return raw;
+};
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => getStoredUser());
   const [token, setToken] = useState(() => getStoredToken());
@@ -59,6 +74,14 @@ export function AuthProvider({ children }) {
   const [authError, setAuthError] = useState("");
   const pendingUsernameRef = useRef("");
   const isEstablishingRef = useRef(false);
+  const isHandlingForcedLogoutRef = useRef(false);
+
+  const clearLocalAuthState = useCallback(() => {
+    closeSocket();
+    clearSession();
+    setUser(null);
+    setToken(null);
+  }, []);
 
   const resolveSafeSyncPayload = useCallback((firebaseUser, preferredUsername) => {
     const safeUsername = String(preferredUsername || "").trim();
@@ -98,6 +121,26 @@ export function AuthProvider({ children }) {
     [resolveSafeSyncPayload]
   );
 
+  const forceLogoutFromInvalidSession = useCallback(async (message = "") => {
+    if (isHandlingForcedLogoutRef.current) return;
+    isHandlingForcedLogoutRef.current = true;
+
+    try {
+      await signOutFirebase();
+    } catch (_error) {
+      // Ignore sign-out errors and still clear local state.
+    } finally {
+      clearLocalAuthState();
+      pendingUsernameRef.current = "";
+      if (message) {
+        setAuthError(message);
+      }
+      isEstablishingRef.current = false;
+      setIsBootstrapping(false);
+      isHandlingForcedLogoutRef.current = false;
+    }
+  }, [clearLocalAuthState]);
+
   useEffect(() => {
     let mounted = true;
 
@@ -111,10 +154,7 @@ export function AuthProvider({ children }) {
       setIsBootstrapping(true);
 
       if (!firebaseUser) {
-        closeSocket();
-        clearSession();
-        setUser(null);
-        setToken(null);
+        clearLocalAuthState();
         setAuthError("");
         isEstablishingRef.current = false;
         setIsBootstrapping(false);
@@ -132,11 +172,8 @@ export function AuthProvider({ children }) {
           // Ignore sign-out errors.
         }
 
-        closeSocket();
-        clearSession();
-        setUser(null);
-        setToken(null);
-        setAuthError(_error?.message || "Could not complete backend session.");
+        clearLocalAuthState();
+        setAuthError(normalizeAuthErrorMessage(_error));
         pendingUsernameRef.current = "";
       } finally {
         isEstablishingRef.current = false;
@@ -150,7 +187,29 @@ export function AuthProvider({ children }) {
       mounted = false;
       unsubscribe();
     };
-  }, [establishBackendSession]);
+  }, [clearLocalAuthState, establishBackendSession]);
+
+  useEffect(() => {
+    const handleAuthInvalid = async (event) => {
+      const message =
+        event?.detail?.message || "Your session expired. Please login again.";
+      await forceLogoutFromInvalidSession(message);
+    };
+
+    const handleStorageChange = async (event) => {
+      if (event.key === "citrus_token" && !event.newValue) {
+        await forceLogoutFromInvalidSession("");
+      }
+    };
+
+    window.addEventListener(AUTH_INVALID_EVENT, handleAuthInvalid);
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener(AUTH_INVALID_EVENT, handleAuthInvalid);
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [forceLogoutFromInvalidSession]);
 
   const login = useCallback(
     async ({ email, password }) => {
@@ -192,12 +251,9 @@ export function AuthProvider({ children }) {
       // Ignore network/logout endpoint errors.
     } finally {
       await signOutFirebase();
-      closeSocket();
-      clearSession();
-      setUser(null);
-      setToken(null);
+      clearLocalAuthState();
     }
-  }, []);
+  }, [clearLocalAuthState]);
 
   const value = useMemo(
     () => ({

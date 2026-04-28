@@ -10,6 +10,7 @@ function QuestionCard({
   onVote,
   onToggleSave,
   onStartChat,
+  onExplain,
   onEdit,
   onDelete,
 }) {
@@ -22,7 +23,7 @@ function QuestionCard({
     <article className="question-item">
       <aside className="question-item__stats">
         <strong>{voteScore}</strong>
-        <span>votes</span>
+        <span>zesty</span>
         <strong className={answerCount > 0 ? "has-answer" : ""}>{answerCount}</strong>
         <span>answers</span>
       </aside>
@@ -52,8 +53,11 @@ function QuestionCard({
       </div>
 
       <div className="question-item__actions">
-        <button type="button" className="vote-action" onClick={() => onVote(question._id, "upvote")}>+1</button>
-        <button type="button" className="vote-action" onClick={() => onVote(question._id, "downvote")}>-1</button>
+        <button type="button" className="vote-action" onClick={() => onVote(question._id, "upvote")}>ZESTY</button>
+        <button type="button" className="vote-action" onClick={() => onVote(question._id, "downvote")}>NOT ZESTY</button>
+        <button type="button" className="soft-action" onClick={() => onExplain(question)}>
+          Explain by Citrus
+        </button>
         <button type="button" className="soft-action" onClick={() => onToggleSave(question._id)}>
           {isSaved ? "Saved" : "Save"}
         </button>

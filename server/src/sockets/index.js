@@ -3,6 +3,7 @@ const User = require("../models/User");
 const { verifyFirebaseIdToken } = require("../config/firebaseAdmin");
 const { getUserRoom } = require("../services/chatService");
 const registerChatSocketHandlers = require("./chatSocket");
+const { buildCorsOriginDelegate } = require("../config/cors");
 
 const getSocketToken = (socket) => {
   if (socket.handshake.auth?.token) {
@@ -17,24 +18,10 @@ const getSocketToken = (socket) => {
   return null;
 };
 
-const parseAllowedOrigins = () => {
-  const value = process.env.CORS_ORIGIN;
-  if (!value) return true;
-
-  const origins = value
-    .split(",")
-    .map((item) => item.trim().replace(/\/+$/, ""))
-    .filter(Boolean);
-
-  if (origins.length === 0) return true;
-  if (origins.includes("*")) return true;
-  return origins;
-};
-
 const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: parseAllowedOrigins(),
+      origin: buildCorsOriginDelegate(),
       credentials: true,
     },
   });

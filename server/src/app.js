@@ -3,6 +3,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const express = require("express");
 const helmet = require("helmet");
+const { buildCorsOriginDelegate } = require("./config/cors");
 
 const loggerMiddleware = require("./middleware/loggerMiddleware");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
@@ -16,25 +17,11 @@ const chatRoutes = require("./routes/chatRoutes");
 
 const app = express();
 
-const parseAllowedOrigins = () => {
-  const raw = process.env.CORS_ORIGIN;
-  if (!raw) return true;
-
-  const origins = raw
-    .split(",")
-    .map((item) => item.trim().replace(/\/+$/, ""))
-    .filter(Boolean);
-
-  if (origins.length === 0) return true;
-  if (origins.includes("*")) return true;
-  return origins;
-};
-
 app.use(helmet());
 app.use(compression());
 app.use(
   cors({
-    origin: parseAllowedOrigins(),
+    origin: buildCorsOriginDelegate(),
     credentials: true,
   })
 );

@@ -12,6 +12,7 @@ function QuestionList({
   onVoteQuestion,
   onToggleSave,
   onStartChat,
+  onExplainQuestion,
   onEditQuestion,
   onDeleteQuestion,
   onRetry,
@@ -63,6 +64,7 @@ function QuestionList({
           onVote={onVoteQuestion}
           onToggleSave={onToggleSave}
           onStartChat={onStartChat}
+          onExplain={onExplainQuestion}
           onEdit={onEditQuestion}
           onDelete={onDeleteQuestion}
         />

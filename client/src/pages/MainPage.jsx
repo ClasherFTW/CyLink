@@ -14,6 +14,7 @@ import {
 } from "../features/questions/questionsApi";
 import { useBookmarks } from "../features/bookmarks/BookmarksContext";
 import { useToast } from "../features/ui/ToastContext";
+import { useCitrusBot } from "../features/ai/CitrusBotContext";
 import { formatShortDate } from "../utils/formatters";
 
 const CLIENT_PAGE_SIZE = 10;
@@ -39,6 +40,7 @@ function inDateRange(question, dateRange) {
 function MainPage() {
   const { user } = useAuth();
   const { bookmarks, toggle } = useBookmarks();
+  const { explainQuestion } = useCitrusBot();
   const toast = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -187,7 +189,7 @@ function MainPage() {
   return (
     <AppShell
       title="Newest Questions"
-      subtitle={`${filteredQuestions.length} results${savedOnly ? " ? saved only" : ""}`}
+      subtitle={`${filteredQuestions.length} results${savedOnly ? " | saved only" : ""}`}
       actions={
         <button type="button" className="btn btn--primary" onClick={() => setEditingQuestion(null)}>
           Ask Question
@@ -337,6 +339,7 @@ function MainPage() {
         onVoteQuestion={handleVote}
         onToggleSave={handleToggleSaved}
         onStartChat={(participantId) => navigate(`/app/chat?participant=${participantId}`)}
+        onExplainQuestion={(question) => explainQuestion(question)}
         onEditQuestion={(question) => setEditingQuestion(question)}
         onDeleteQuestion={handleDeleteQuestion}
         onRetry={questionsQuery.refetch}

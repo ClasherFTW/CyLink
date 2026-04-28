@@ -1,5 +1,6 @@
 const asyncHandler = require("../utils/asyncHandler");
 const { pickPublicUser, syncUserFromFirebase } = require("../services/authService");
+const { revokeFirebaseUserSessions } = require("../config/firebaseAdmin");
 
 const syncProfile = asyncHandler(async (req, res) => {
   const user = await syncUserFromFirebase({
@@ -15,10 +16,15 @@ const syncProfile = asyncHandler(async (req, res) => {
   });
 });
 
-const logout = asyncHandler(async (_req, res) => {
+const logout = asyncHandler(async (req, res) => {
+  const firebaseUid = req.firebaseAuth?.uid;
+  if (firebaseUid) {
+    await revokeFirebaseUserSessions(firebaseUid);
+  }
+
   res.status(200).json({
     success: true,
-    message: "Logout successful.",
+    message: "Logout successful. Session revoked.",
   });
 });
 

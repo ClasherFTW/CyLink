@@ -35,6 +35,7 @@ function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [typingState, setTypingState] = useState({ isTyping: false, userId: "" });
   const hasAutoStartedRef = useRef(false);
+  const threadRef = useRef(null);
 
   const selfId = user?.id || user?._id || "";
 
@@ -69,6 +70,11 @@ function ChatPage() {
     setMessages(messagesQuery.data?.items || []);
   }, [messagesQuery.data]);
 
+  useEffect(() => {
+    if (!threadRef.current) return;
+    threadRef.current.scrollTop = threadRef.current.scrollHeight;
+  }, [messages, activeChatId]);
+
   const startChatMutation = useMutation({
     mutationFn: (targetId) => startChat(targetId),
     onSuccess: (chat) => {
@@ -96,6 +102,11 @@ function ChatPage() {
   });
 
   const socket = useMemo(() => getSocket(token), [token]);
+  const activeChat = useMemo(
+    () => chatItems.find((chat) => chat._id === activeChatId) || null,
+    [chatItems, activeChatId]
+  );
+  const activePartner = activeChat ? resolveOtherParticipant(activeChat, selfId) : null;
 
   useEffect(() => {
     if (!socket || !activeChatId) return;
@@ -177,14 +188,14 @@ function ChatPage() {
   }
 
   return (
-    <AppShell title="Realtime Chat" subtitle="1-to-1 chat via HTTP + Socket.io">
+    <AppShell title="Realtime Chat" subtitle="1-to-1 messaging with live updates">
       <section className="content-panel chat-start-panel">
         <div className="chat-discovery">
-          <form className="inline-actions" onSubmit={handleStartChat}>
+          <form className="chat-discovery__start" onSubmit={handleStartChat}>
             <input
               value={participantId}
               onChange={(event) => setParticipantId(event.target.value)}
-              placeholder="Participant user id"
+              placeholder="Enter user ID to start chat"
             />
             <button type="submit" className="btn btn--primary" disabled={startChatMutation.isPending}>
               {startChatMutation.isPending ? "Starting..." : "Start / Open Chat"}
@@ -192,6 +203,7 @@ function ChatPage() {
           </form>
 
           <input
+            className="chat-discovery__search"
             value={participantSearch}
             onChange={(event) => setParticipantSearch(event.target.value)}
             placeholder="Search users by name or email (min 2 chars)"
@@ -207,7 +219,7 @@ function ChatPage() {
                 <button
                   key={candidate.id}
                   type="button"
-                  className="chat-list-item"
+                  className="chat-list-item chat-user-result"
                   onClick={() => {
                     setParticipantId(candidate.id);
                     startChatMutation.mutate(candidate.id);
@@ -224,9 +236,15 @@ function ChatPage() {
 
       <section className="chat-layout">
         <aside className="content-panel chat-list-panel">
-          <h3>Your Chats</h3>
+          <div className="chat-section-head">
+            <h3>Your Chats</h3>
+            <small>{chatItems.length}</small>
+          </div>
 
           {chatsQuery.isLoading ? <p className="muted">Loading chats...</p> : null}
+          {!chatsQuery.isLoading && chatItems.length === 0 ? (
+            <p className="muted">No chats yet. Search and start one above.</p>
+          ) : null}
 
           {chatItems.map((chat) => {
             const partner = resolveOtherParticipant(chat, selfId);
@@ -245,9 +263,15 @@ function ChatPage() {
         </aside>
 
         <div className="content-panel chat-thread-panel">
-          <h3>Messages</h3>
+          <div className="chat-section-head">
+            <h3>{activePartner?.username || "Messages"}</h3>
+            <small>{activePartner?.email || "Select or start a chat"}</small>
+          </div>
 
-          <div className="chat-thread">
+          <div className="chat-thread" ref={threadRef}>
+            {!activeChatId ? (
+              <p className="muted">Start a chat to begin messaging.</p>
+            ) : null}
             {messages.map((message) => {
               const mine = getId(message.senderId) === selfId;
               return (
@@ -267,6 +291,7 @@ function ChatPage() {
               placeholder="Type a message"
               value={draft}
               onChange={(event) => handleTyping(event.target.value)}
+              disabled={!activeChatId}
             />
             <button type="submit" className="btn btn--primary" disabled={!activeChatId}>
               Send

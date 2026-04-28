@@ -18,7 +18,7 @@ const QUESTION_REPUTATION = {
 };
 
 const canManageQuestion = (question, actor) =>
-  actor.role === "admin" || toObjectIdString(question.userId) === toObjectIdString(actor._id);
+  toObjectIdString(question.userId) === toObjectIdString(actor._id);
 
 const createQuestion = async ({ title, description, tags, userId }) => {
   const question = await Question.create({

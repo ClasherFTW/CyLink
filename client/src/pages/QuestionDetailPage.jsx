@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AppShell from "../components/layout/AppShell";
-import CitrusBotPanel from "../components/chatbot/CitrusBotPanel";
 import AnswerComposer from "../components/questions/AnswerComposer";
 import AnswerList from "../components/questions/AnswerList";
 import QuestionComposer from "../components/questions/QuestionComposer";
@@ -18,6 +17,7 @@ import {
 import { useAuth } from "../features/auth/AuthContext";
 import { useBookmarks } from "../features/bookmarks/BookmarksContext";
 import { useToast } from "../features/ui/ToastContext";
+import { useCitrusBot } from "../features/ai/CitrusBotContext";
 import {
   deleteQuestion,
   getQuestionById,
@@ -32,13 +32,13 @@ function QuestionDetailPage() {
   const { questionId } = useParams();
   const { user } = useAuth();
   const { has: isBookmarked, toggle: toggleBookmark } = useBookmarks();
+  const { explainQuestion, askFreeform } = useCitrusBot();
   const toast = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const [isEditingQuestion, setIsEditingQuestion] = useState(false);
   const [editingAnswer, setEditingAnswer] = useState(null);
-  const [selectedAnswerContext, setSelectedAnswerContext] = useState(null);
 
   const questionQuery = useQuery({
     queryKey: ["question", questionId],
@@ -140,6 +140,24 @@ function QuestionDetailPage() {
     return isSameId(getId(question.userId), user?.id || user?._id);
   }, [question, user?.id, user?._id]);
 
+  async function handleExplainQuestion() {
+    if (!question) return;
+    await explainQuestion(question);
+  }
+
+  async function handleExplainAnswer(questionItem, answer) {
+    const prompt = [
+      "Explain this question and answer in simple terms and suggest a practical next action.",
+      `Question title: ${questionItem?.title || ""}`,
+      `Question description: ${questionItem?.description || ""}`,
+      `Answer: ${answer?.content || ""}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    await askFreeform(prompt);
+  }
+
   if (questionQuery.isLoading) {
     return (
       <AppShell title="Question" subtitle="Loading">
@@ -202,9 +220,16 @@ function QuestionDetailPage() {
           <div className="question-view-panel__head">
             <h2>{question.title}</h2>
             <div className="inline-actions compact">
-              <button type="button" className="vote-action" onClick={() => questionVoteMutation.mutate("upvote")}>+1</button>
+              <button type="button" className="vote-action" onClick={() => questionVoteMutation.mutate("upvote")}>
+                ZESTY
+              </button>
               <strong>{question.voteScore || 0}</strong>
-              <button type="button" className="vote-action" onClick={() => questionVoteMutation.mutate("downvote")}>-1</button>
+              <button type="button" className="vote-action" onClick={() => questionVoteMutation.mutate("downvote")}>
+                NOT ZESTY
+              </button>
+              <button type="button" className="soft-action" onClick={handleExplainQuestion}>
+                Explain by Citrus
+              </button>
             </div>
           </div>
 
@@ -220,7 +245,7 @@ function QuestionDetailPage() {
             </div>
 
             <small>
-              by {question.userId?.username || "anonymous"} ? {formatRelativeTime(question.createdAt)}
+              by {question.userId?.username || "anonymous"} | {formatRelativeTime(question.createdAt)}
             </small>
           </div>
 
@@ -270,33 +295,19 @@ function QuestionDetailPage() {
         />
       )}
 
-      <div className="question-detail-layout">
-        <AnswerList
-          answers={answers}
-          currentUserId={user?.id || user?._id}
-          selectedAnswerId={selectedAnswerContext?.id || ""}
-          onVote={(answerId, voteType) => answerVoteMutation.mutate({ answerId, voteType })}
-          onStartEdit={(answer) => setEditingAnswer(answer)}
-          onDelete={(answer) => {
-            if (window.confirm("Delete this answer?")) {
-              deleteAnswerMutation.mutate(answer._id);
-            }
-          }}
-          onUseAsContext={(answer) =>
-            setSelectedAnswerContext({
-              id: answer._id,
-              content: answer.content,
-            })
+      <AnswerList
+        question={question}
+        answers={answers}
+        currentUserId={user?.id || user?._id}
+        onVote={(answerId, voteType) => answerVoteMutation.mutate({ answerId, voteType })}
+        onStartEdit={(answer) => setEditingAnswer(answer)}
+        onDelete={(answer) => {
+          if (window.confirm("Delete this answer?")) {
+            deleteAnswerMutation.mutate(answer._id);
           }
-        />
-
-        <CitrusBotPanel
-          questionId={questionId}
-          post={question}
-          selectedContext={selectedAnswerContext?.content || ""}
-          onClearContext={() => setSelectedAnswerContext(null)}
-        />
-      </div>
+        }}
+        onExplain={(questionItem, answer) => handleExplainAnswer(questionItem, answer)}
+      />
     </AppShell>
   );
 }

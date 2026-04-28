@@ -14,7 +14,7 @@ const extractToken = (req) => {
   return null;
 };
 
-const attachFirebaseAuth = async (req, required) => {
+const attachFirebaseAuth = async (req, required, checkRevoked = false) => {
   const token = extractToken(req);
 
   if (!token) {
@@ -25,12 +25,15 @@ const attachFirebaseAuth = async (req, required) => {
   }
 
   try {
-    const decoded = await verifyFirebaseIdToken(token);
+    const decoded = await verifyFirebaseIdToken(token, checkRevoked);
     req.firebaseAuth = decoded;
     return decoded;
   } catch (error) {
     if (error?.code === "auth/id-token-expired") {
       throw new ApiError(401, "Firebase authentication token expired.");
+    }
+    if (error?.code === "auth/id-token-revoked") {
+      throw new ApiError(401, "Session revoked. Please login again.");
     }
     throw new ApiError(401, "Invalid Firebase authentication token.");
   }
@@ -62,7 +65,7 @@ const attachAppUser = async (req, required) => {
 
 const protectFirebaseToken = async (req, _res, next) => {
   try {
-    await attachFirebaseAuth(req, true);
+    await attachFirebaseAuth(req, true, true);
     next();
   } catch (error) {
     next(error);
@@ -71,7 +74,7 @@ const protectFirebaseToken = async (req, _res, next) => {
 
 const protect = async (req, _res, next) => {
   try {
-    await attachFirebaseAuth(req, true);
+    await attachFirebaseAuth(req, true, true);
     await attachAppUser(req, true);
     next();
   } catch (error) {

@@ -64,12 +64,19 @@ const getFirebaseAdminApp = () => {
   });
 };
 
-const verifyFirebaseIdToken = async (token) => {
+const verifyFirebaseIdToken = async (token, checkRevoked = false) => {
   const app = getFirebaseAdminApp();
-  return app.auth().verifyIdToken(token);
+  return app.auth().verifyIdToken(token, checkRevoked);
+};
+
+const revokeFirebaseUserSessions = async (uid) => {
+  if (!uid) return;
+  const app = getFirebaseAdminApp();
+  await app.auth().revokeRefreshTokens(uid);
 };
 
 module.exports = {
   getFirebaseAdminApp,
   verifyFirebaseIdToken,
+  revokeFirebaseUserSessions,
 };

@@ -3,13 +3,13 @@ import { getId, isSameId } from "../../utils/id";
 import { markdownToHtml } from "../../utils/markdown";
 
 function AnswerList({
+  question,
   answers,
   currentUserId,
-  selectedAnswerId,
   onVote,
   onStartEdit,
   onDelete,
-  onUseAsContext,
+  onExplain,
 }) {
   if (!answers.length) {
     return (
@@ -29,17 +29,16 @@ function AnswerList({
       <div className="answer-list">
         {answers.map((answer) => {
           const isOwner = isSameId(getId(answer.userId), currentUserId);
-          const isSelected = selectedAnswerId === answer._id;
 
           return (
-            <article key={answer._id} className={`answer-item ${isSelected ? "is-context" : ""}`}>
+            <article key={answer._id} className="answer-item">
               <div className="answer-item__votes">
                 <button type="button" className="vote-action" onClick={() => onVote(answer._id, "upvote")}>
-                  +1
+                  ZESTY
                 </button>
                 <strong>{answer.voteScore || 0}</strong>
                 <button type="button" className="vote-action" onClick={() => onVote(answer._id, "downvote")}>
-                  -1
+                  NOT ZESTY
                 </button>
               </div>
 
@@ -48,12 +47,12 @@ function AnswerList({
 
                 <div className="answer-item__footer">
                   <small>
-                    by {answer.userId?.username || "anonymous"} ? {formatRelativeTime(answer.createdAt)}
+                    by {answer.userId?.username || "anonymous"} | {formatRelativeTime(answer.createdAt)}
                   </small>
 
                   <div className="inline-actions compact">
-                    <button type="button" className="soft-action" onClick={() => onUseAsContext(answer)}>
-                      {isSelected ? "Selected" : "Use in Ask Citrus"}
+                    <button type="button" className="soft-action" onClick={() => onExplain(question, answer)}>
+                      Explain by Citrus
                     </button>
 
                     {isOwner ? (

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,6 +22,7 @@ function AuthPage() {
   const toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+  const lastShownAuthErrorRef = useRef("");
 
   const schema = useMemo(() => (mode === "login" ? loginSchema : registerSchema), [mode]);
 
@@ -49,6 +50,8 @@ function AuthPage() {
 
   useEffect(() => {
     if (!authError) return;
+    if (lastShownAuthErrorRef.current === authError) return;
+    lastShownAuthErrorRef.current = authError;
     toast.error("Session setup failed", authError);
   }, [authError, toast]);
 

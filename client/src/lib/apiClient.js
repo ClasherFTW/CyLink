@@ -2,6 +2,7 @@ import { getStoredToken } from "./session";
 import { getApiBaseUrl } from "./config";
 
 const API_BASE_URL = getApiBaseUrl();
+export const AUTH_INVALID_EVENT = "citrus:auth-invalid";
 
 export class ApiClientError extends Error {
   constructor(message, { status = 500, details = null } = {}) {
@@ -14,6 +15,18 @@ export class ApiClientError extends Error {
 
 function buildUrl(path) {
   return `${API_BASE_URL}${path}`;
+}
+
+export function notifyAuthInvalid(status, message) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(
+    new CustomEvent(AUTH_INVALID_EVENT, {
+      detail: {
+        status,
+        message,
+      },
+    })
+  );
 }
 
 export async function apiRequest(path, options = {}) {
@@ -48,6 +61,9 @@ export async function apiRequest(path, options = {}) {
   }
 
   if (!response.ok || payload?.success === false) {
+    if (response.status === 401) {
+      notifyAuthInvalid(response.status, payload?.message || "Unauthorized.");
+    }
     throw new ApiClientError(payload?.message || "Request failed.", {
       status: response.status,
       details: payload?.details || null,

@@ -17,7 +17,7 @@ const ANSWER_REPUTATION = {
 };
 
 const canManageAnswer = (answer, actor) =>
-  actor.role === "admin" || toObjectIdString(answer.userId) === toObjectIdString(actor._id);
+  toObjectIdString(answer.userId) === toObjectIdString(actor._id);
 
 const createAnswer = async ({ questionId, userId, content }) => {
   const question = await Question.findById(questionId);

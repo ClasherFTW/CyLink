@@ -3,7 +3,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "../../features/auth/AuthContext";
 import { ToastProvider } from "../../features/ui/ToastContext";
 import { BookmarksProvider } from "../../features/bookmarks/BookmarksContext";
+import { CitrusBotProvider } from "../../features/ai/CitrusBotContext";
 import ToastViewport from "../../components/common/ToastViewport";
+import CitrusBotPopup from "../../components/chatbot/CitrusBotPopup";
 
 function AppProviders({ children }) {
   const [queryClient] = useState(
@@ -24,8 +26,11 @@ function AppProviders({ children }) {
       <AuthProvider>
         <ToastProvider>
           <BookmarksProvider>
-            {children}
-            <ToastViewport />
+            <CitrusBotProvider>
+              {children}
+              <ToastViewport />
+              <CitrusBotPopup />
+            </CitrusBotProvider>
           </BookmarksProvider>
         </ToastProvider>
       </AuthProvider>
