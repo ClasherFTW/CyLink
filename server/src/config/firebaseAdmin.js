@@ -2,15 +2,60 @@ const admin = require("firebase-admin");
 const path = require("path");
 const fs = require("fs");
 
-const SERVICE_ACCOUNT_FILENAME = "cylink-5589a-firebase-adminsdk-fbsvc-6f43e26d92.json";
+const SERVER_ROOT = path.resolve(__dirname, "..", "..");
+const KNOWN_SERVICE_ACCOUNT_FILENAMES = [
+  "cylink-5589a-firebase-adminsdk-fbsvc-6f43e26d92.json",
+  "citrus-5589a-firebase-adminsdk-fbsvc-6f43e26d92.json",
+];
+
+const readServiceAccountFromPath = (serviceAccountPath) => {
+  if (!serviceAccountPath) return null;
+  if (!fs.existsSync(serviceAccountPath)) return null;
+
+  const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
+  return {
+    serviceAccount,
+    serviceAccountPath,
+  };
+};
+
+const resolveServiceAccountFromDisk = () => {
+  const envConfiguredPath = String(
+    process.env.FIREBASE_SERVICE_ACCOUNT_PATH || ""
+  ).trim();
+
+  if (envConfiguredPath) {
+    const absolutePath = path.isAbsolute(envConfiguredPath)
+      ? envConfiguredPath
+      : path.resolve(SERVER_ROOT, envConfiguredPath);
+    const byEnvPath = readServiceAccountFromPath(absolutePath);
+    if (byEnvPath) return byEnvPath;
+  }
+
+  for (const filename of KNOWN_SERVICE_ACCOUNT_FILENAMES) {
+    const absolutePath = path.resolve(SERVER_ROOT, filename);
+    const byKnownFilename = readServiceAccountFromPath(absolutePath);
+    if (byKnownFilename) return byKnownFilename;
+  }
+
+  const discoveredFile = fs
+    .readdirSync(SERVER_ROOT)
+    .find((name) => /firebase-adminsdk-[^/\\]+\.json$/i.test(name));
+
+  if (!discoveredFile) return null;
+  return readServiceAccountFromPath(path.resolve(SERVER_ROOT, discoveredFile));
+};
 
 const buildCredential = () => {
   // Method 1: Load from service account JSON file on disk (highest priority)
-  const serviceAccountPath = path.resolve(__dirname, "..", "..", SERVICE_ACCOUNT_FILENAME);
-  if (fs.existsSync(serviceAccountPath)) {
-    const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
-    console.log("[Firebase] Initialized using service account JSON file.");
-    return admin.credential.cert(serviceAccount);
+  const diskServiceAccount = resolveServiceAccountFromDisk();
+  if (diskServiceAccount?.serviceAccount) {
+    console.log(
+      `[Firebase] Initialized using service account JSON file: ${path.basename(
+        diskServiceAccount.serviceAccountPath
+      )}`
+    );
+    return admin.credential.cert(diskServiceAccount.serviceAccount);
   }
 
   // Method 2: Load from FIREBASE_SERVICE_ACCOUNT_JSON env var (full JSON string)
@@ -45,12 +90,14 @@ const buildCredential = () => {
 
   if (process.env.NODE_ENV === "production") {
     throw new Error(
-      "[Firebase] Missing Admin credentials in production. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_PROJECT_ID/FIREBASE_CLIENT_EMAIL/FIREBASE_PRIVATE_KEY."
+      "[Firebase] Missing Admin credentials in production. Set FIREBASE_SERVICE_ACCOUNT_PATH, FIREBASE_SERVICE_ACCOUNT_JSON, or FIREBASE_PROJECT_ID/FIREBASE_CLIENT_EMAIL/FIREBASE_PRIVATE_KEY."
     );
   }
 
   // Method 4: Fall back to Application Default Credentials
-  console.log("[Firebase] Falling back to Application Default Credentials.");
+  console.log(
+    "[Firebase] Falling back to Application Default Credentials. Set FIREBASE_SERVICE_ACCOUNT_PATH to avoid local token verification issues."
+  );
   return admin.credential.applicationDefault();
 };
 
