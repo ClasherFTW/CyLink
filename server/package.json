@@ -1,7 +1,7 @@
 {
-  "name": "citrus-backend",
+  "name": "cylink-backend",
   "version": "1.0.0",
-  "description": "Production-ready backend for Citrus (Stack Overflow-like app) using Node.js, Express, MongoDB, Firebase Auth, Socket.io, and modular AI services.",
+  "description": "Production-ready backend for CyLink (Stack Overflow-like app) using Node.js, Express, MongoDB, Firebase Auth, Socket.io, and modular AI services.",
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",

@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
-import { askCitrusBotStream } from "./aiApi";
+import { askCyLinkBotStream } from "./aiApi";
 
-const CitrusBotContext = createContext(null);
+const CyLinkBotContext = createContext(null);
 
 const createMessage = (role, content, extras = {}) => ({
   id: `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -11,10 +11,10 @@ const createMessage = (role, content, extras = {}) => ({
 });
 
 const defaultMessages = () => [
-  createMessage("assistant", "I am Citrus Bot. Ask Citrus anything."),
+  createMessage("assistant", "I am CyLink Bot. Ask CyLink anything."),
 ];
 
-export function CitrusBotProvider({ children }) {
+export function CyLinkBotProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -45,7 +45,7 @@ export function CitrusBotProvider({ children }) {
       const controller = new AbortController();
       requestRef.current = controller;
 
-      const data = await askCitrusBotStream({
+      const data = await askCyLinkBotStream({
         question: cleanPrompt,
         useRetrieval: true,
         signal: controller.signal,
@@ -81,8 +81,8 @@ export function CitrusBotProvider({ children }) {
       const isAborted = requestError?.name === "AbortError";
       setError(
         isAborted
-          ? "Citrus Bot request cancelled."
-          : requestError.message || "Could not reach Citrus Bot."
+          ? "CyLink Bot request cancelled."
+          : requestError.message || "Could not reach CyLink Bot."
       );
       setMessages((prev) =>
         prev.map((message) =>
@@ -115,7 +115,7 @@ export function CitrusBotProvider({ children }) {
         .filter(Boolean)
         .join("\n");
 
-      await runPrompt({ prompt, sourceLabel: "Explain by Citrus" });
+      await runPrompt({ prompt, sourceLabel: "Explain by CyLink" });
     },
     [runPrompt]
   );
@@ -157,14 +157,14 @@ export function CitrusBotProvider({ children }) {
   );
 
   return (
-    <CitrusBotContext.Provider value={value}>{children}</CitrusBotContext.Provider>
+    <CyLinkBotContext.Provider value={value}>{children}</CyLinkBotContext.Provider>
   );
 }
 
-export function useCitrusBot() {
-  const context = useContext(CitrusBotContext);
+export function useCyLinkBot() {
+  const context = useContext(CyLinkBotContext);
   if (!context) {
-    throw new Error("useCitrusBot must be used inside CitrusBotProvider.");
+    throw new Error("useCyLinkBot must be used inside CyLinkBotProvider.");
   }
   return context;
 }

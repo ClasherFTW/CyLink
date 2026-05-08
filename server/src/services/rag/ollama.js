@@ -5,7 +5,7 @@ const getOllamaBaseUrl = () =>
 const getOllamaModel = () => process.env.OLLAMA_MODEL || "qwen2.5-coder:7b";
 
 const SYSTEM_PROMPT =
-  "You are Citrus Bot. Give concise, correct, developer-friendly answers. Prefer practical steps and short examples when helpful.";
+  "You are CyLink Bot. Give concise, correct, developer-friendly answers. Prefer practical steps and short examples when helpful.";
 
 const createPrompt = ({ question, contextChunks = [] }) => {
   const contextText = contextChunks.length

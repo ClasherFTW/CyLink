@@ -22,21 +22,21 @@ const seed = async () => {
   const [admin, alice, bob] = await User.create([
     {
       username: "admin",
-      email: "admin@citrus.dev",
+      email: "admin@CyLink.dev",
       firebaseUid: "seed_admin_uid",
       role: "admin",
       reputation: 100,
     },
     {
       username: "alice",
-      email: "alice@citrus.dev",
+      email: "alice@CyLink.dev",
       firebaseUid: "seed_alice_uid",
       role: "user",
       reputation: 15,
     },
     {
       username: "bob",
-      email: "bob@citrus.dev",
+      email: "bob@CyLink.dev",
       firebaseUid: "seed_bob_uid",
       role: "user",
       reputation: 25,

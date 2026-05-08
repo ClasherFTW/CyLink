@@ -197,7 +197,7 @@ export function AuthProvider({ children }) {
     };
 
     const handleStorageChange = async (event) => {
-      if (event.key === "citrus_token" && !event.newValue) {
+      if (event.key === "CyLink_token" && !event.newValue) {
         await forceLogoutFromInvalidSession("");
       }
     };

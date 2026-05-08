@@ -14,7 +14,7 @@ import {
 } from "../features/questions/questionsApi";
 import { useBookmarks } from "../features/bookmarks/BookmarksContext";
 import { useToast } from "../features/ui/ToastContext";
-import { useCitrusBot } from "../features/ai/CitrusBotContext";
+import { useCyLinkBot } from "../features/ai/CyLinkBotContext";
 import { formatShortDate } from "../utils/formatters";
 
 const CLIENT_PAGE_SIZE = 10;
@@ -40,7 +40,7 @@ function inDateRange(question, dateRange) {
 function MainPage() {
   const { user } = useAuth();
   const { bookmarks, toggle } = useBookmarks();
-  const { explainQuestion } = useCitrusBot();
+  const { explainQuestion } = useCyLinkBot();
   const toast = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();

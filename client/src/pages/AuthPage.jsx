@@ -62,14 +62,14 @@ function AuthPage() {
           email: values.email,
           password: values.password,
         });
-        toast.info("Login accepted", "Finalizing your Citrus session...");
+        toast.info("Login accepted", "Finalizing your CyLink session...");
       } else {
         await register({
           username: values.username,
           email: values.email,
           password: values.password,
         });
-        toast.info("Account created", "Finalizing your Citrus session...");
+        toast.info("Account created", "Finalizing your CyLink session...");
       }
     } catch (error) {
       toast.error("Authentication failed", error.message || "Please try again.");
@@ -80,7 +80,7 @@ function AuthPage() {
     try {
       setIsGoogleLoading(true);
       await loginWithGoogle();
-      toast.info("Google connected", "Finalizing your Citrus session...");
+      toast.info("Google connected", "Finalizing your CyLink session...");
     } catch (error) {
       toast.error("Google login failed", error.message || "Please try again.");
     } finally {
@@ -92,12 +92,12 @@ function AuthPage() {
     <div className="auth-page">
       <section className="auth-card">
         <Link to="/" className="brand-link auth-brand">
-          citrus
+          CyLink
           <span className="brand-link__dot" />
         </Link>
 
         <h1>{mode === "login" ? "Login" : "Create Account"}</h1>
-        <p>Enter your credentials to continue to Citrus.</p>
+        <p>Enter your credentials to continue to CyLink.</p>
 
         <form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
           {mode === "register" ? (

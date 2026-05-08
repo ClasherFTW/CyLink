@@ -53,7 +53,7 @@ const attachAppUser = async (req, required) => {
     if (required) {
       throw new ApiError(
         401,
-        "No Citrus profile found for this Firebase account. Call /auth/sync first."
+        "No CyLink profile found for this Firebase account. Call /auth/sync first."
       );
     }
     return null;

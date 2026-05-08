@@ -56,7 +56,7 @@ function QuestionCard({
         <button type="button" className="vote-action" onClick={() => onVote(question._id, "upvote")}>ZESTY</button>
         <button type="button" className="vote-action" onClick={() => onVote(question._id, "downvote")}>NOT ZESTY</button>
         <button type="button" className="soft-action" onClick={() => onExplain(question)}>
-          Explain by Citrus
+          Explain by CyLink
         </button>
         <button type="button" className="soft-action" onClick={() => onToggleSave(question._id)}>
           {isSaved ? "Saved" : "Save"}

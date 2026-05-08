@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useCitrusBot } from "../../features/ai/CitrusBotContext";
+import { useCyLinkBot } from "../../features/ai/CyLinkBotContext";
 
-function CitrusBotPopup() {
+function CyLinkBotPopup() {
   const location = useLocation();
   const {
     isOpen,
@@ -12,7 +12,7 @@ function CitrusBotPopup() {
     messages,
     askFreeform,
     clear,
-  } = useCitrusBot();
+  } = useCyLinkBot();
   const [draft, setDraft] = useState("");
 
   if (!location.pathname.startsWith("/app")) {
@@ -34,8 +34,8 @@ function CitrusBotPopup() {
         className="bot-widget__trigger"
         onClick={() => setIsOpen((prev) => !prev)}
       >
-        <span>Citrus Bot</span>
-        <span className="ask-tag">ask citrus</span>
+        <span>CyLink Bot</span>
+        <span className="ask-tag">ask CyLink</span>
       </button>
 
       {isOpen ? (
@@ -66,7 +66,7 @@ function CitrusBotPopup() {
               rows={3}
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder="Ask Citrus"
+              placeholder="Ask CyLink"
               required
             />
 
@@ -82,4 +82,4 @@ function CitrusBotPopup() {
   );
 }
 
-export default CitrusBotPopup;
+export default CyLinkBotPopup;

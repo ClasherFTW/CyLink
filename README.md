@@ -1,6 +1,6 @@
-# Citrus 
+# CyLink 
 
-Citrus has two apps:
+CyLink has two apps:
 
 - `server/` -> Backend (Express + MongoDB + Firebase Auth + Socket.io + AI endpoint)
 - `client/` -> Frontend (React + Vite + Firebase client auth)
@@ -18,7 +18,7 @@ Citrus has two apps:
 - Node.js 18+
 - MongoDB (local or Atlas)
 - Firebase project with Authentication enabled (Google and/or email/password)
-- Ollama (for Citrus Bot LLM)
+- Ollama (for CyLink Bot LLM)
 
 ## 2) Configure backend (`server/.env`)
 
@@ -26,7 +26,7 @@ Create `server/.env` from `server/.env.example` and set:
 
 - `MONGO_URI`
 - `MONGO_DB_NAME`
-- `CORS_ORIGIN=http://localhost:6969,https://citrus-kappa.vercel.app`
+- `CORS_ORIGIN=http://localhost:6969,https://cylink-kappa.vercel.app`
 - Firebase Admin credentials (one method):
 
 Method A (recommended):
@@ -37,7 +37,7 @@ Method B:
   - `FIREBASE_SERVICE_ACCOUNT_JSON` (single-line JSON string)
   - OR `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`
 
-AI (Citrus Bot):
+AI (CyLink Bot):
 - `OLLAMA_BASE_URL=http://localhost:11434`
 - `OLLAMA_MODEL=qwen2.5-coder:7b`
 
@@ -64,7 +64,7 @@ npm install
 npm run dev
 ```
 
-Before using Citrus Bot, ensure Ollama is running in a separate terminal:
+Before using CyLink Bot, ensure Ollama is running in a separate terminal:
 
 ```bash
 ollama pull qwen2.5-coder:7b
@@ -86,19 +86,19 @@ npm run dev
 
 Use your current production URLs:
 
-- Backend: `https://citrus-9lf9.onrender.com`
-- Frontend: `https://citrus-kappa.vercel.app`
+- Backend: `https://cylink-9lf9.onrender.com`
+- Frontend: `https://cylink-kappa.vercel.app`
 
 Render environment variables:
 
-- `CORS_ORIGIN=http://localhost:6969,https://citrus-kappa.vercel.app`
+- `CORS_ORIGIN=http://localhost:6969,https://cylink-kappa.vercel.app`
 - `MONGO_URI=...`
 - `MONGO_DB_NAME=...`
 - Firebase Admin env vars (`FIREBASE_SERVICE_ACCOUNT_JSON` or field-based vars)
 
 Vercel environment variables:
 
-- `VITE_API_BASE_URL=https://citrus-9lf9.onrender.com`
+- `VITE_API_BASE_URL=https://cylink-9lf9.onrender.com`
 - All `VITE_FIREBASE_*` vars
 
 Notes:
@@ -137,7 +137,7 @@ MongoDB Atlas checks for deployment:
 2. Pull model: `ollama pull qwen2.5-coder:7b`.
 3. Set `OLLAMA_BASE_URL` and `OLLAMA_MODEL` in `server/.env`.
 4. Restart backend.
-5. Frontend Citrus Bot calls:
+5. Frontend CyLink Bot calls:
    - `POST /ai/chat` (non-stream)
    - `POST /ai/chat/stream` (streaming token output)
 

@@ -31,7 +31,7 @@ const buildUsernameCandidates = ({ preferredUsername, displayName, email, fireba
     sanitizeUsername(preferredUsername) ||
     sanitizeUsername(displayName) ||
     sanitizeUsername(emailPrefix) ||
-    "citrus_user";
+    "CyLink_user";
 
   return [
     base,

@@ -2,7 +2,7 @@ import { apiRequest, ApiClientError, notifyAuthInvalid } from "../../lib/apiClie
 import { getStoredToken } from "../../lib/session";
 import { getApiBaseUrl } from "../../lib/config";
 
-export function askCitrusBot({ question, useRetrieval = true }) {
+export function askCyLinkBot({ question, useRetrieval = true }) {
   return apiRequest("/ai/chat", {
     method: "POST",
     body: {
@@ -12,7 +12,7 @@ export function askCitrusBot({ question, useRetrieval = true }) {
   });
 }
 
-export async function askCitrusBotStream({
+export async function askCyLinkBotStream({
   question,
   useRetrieval = true,
   onChunk,

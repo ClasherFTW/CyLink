@@ -33,7 +33,7 @@ app.use(loggerMiddleware);
 app.get("/health", (_req, res) => {
   res.status(200).json({
     success: true,
-    message: "Citrus backend is healthy.",
+    message: "CyLink backend is healthy.",
     timestamp: new Date().toISOString(),
   });
 });

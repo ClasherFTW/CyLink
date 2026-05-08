@@ -1,6 +1,6 @@
-# Citrus Frontend (React + Vite)
+# CyLink Frontend (React + Vite)
 
-Modern multi-page frontend aligned to the existing Citrus backend.
+Modern multi-page frontend aligned to the existing CyLink backend.
 
 ## Run
 
@@ -28,7 +28,7 @@ VITE_FIREBASE_MEASUREMENT_ID=...
 Production (Vercel):
 
 ```bash
-VITE_API_BASE_URL=https://citrus-9lf9.onrender.com
+VITE_API_BASE_URL=https://cylink-9lf9.onrender.com
 ```
 
 `vercel.json` is included with an SPA rewrite to `index.html` so deep links work.
@@ -45,7 +45,7 @@ VITE_API_BASE_URL=https://citrus-9lf9.onrender.com
 - Global toast notifications
 - Saved/bookmarked questions
 - Advanced filters (tag, date range, unanswered only, most voted this week)
-- Citrus Bot upgrades:
+- CyLink Bot upgrades:
   - per-question bot thread history
   - use a selected answer as extra context
   - streamed token output in the bot panel ("typing" effect)

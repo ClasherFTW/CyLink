@@ -1,5 +1,5 @@
-const TOKEN_KEY = "citrus_token";
-const USER_KEY = "citrus_user";
+const TOKEN_KEY = "CyLink_token";
+const USER_KEY = "CyLink_user";
 
 export function getStoredToken() {
   return localStorage.getItem(TOKEN_KEY);

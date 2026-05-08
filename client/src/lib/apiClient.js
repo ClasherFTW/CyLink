@@ -2,7 +2,7 @@ import { getStoredToken } from "./session";
 import { getApiBaseUrl } from "./config";
 
 const API_BASE_URL = getApiBaseUrl();
-export const AUTH_INVALID_EVENT = "citrus:auth-invalid";
+export const AUTH_INVALID_EVENT = "CyLink:auth-invalid";
 
 export class ApiClientError extends Error {
   constructor(message, { status = 500, details = null } = {}) {

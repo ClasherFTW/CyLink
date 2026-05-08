@@ -41,7 +41,7 @@ const chatWithAIStream = async (req, res, next) => {
       return next(error);
     }
 
-    res.write("\n\n[Citrus Bot streaming error. Please try again.]");
+    res.write("\n\n[CyLink Bot streaming error. Please try again.]");
     res.end();
   }
 

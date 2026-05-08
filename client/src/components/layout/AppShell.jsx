@@ -25,7 +25,7 @@ function AppShell({ title, subtitle, actions, children }) {
       <aside className="so-sidebar">
         <div className="so-sidebar__brand">
           <span className="brand-link">
-            citrus
+            CyLink
             <span className="brand-link__dot" />
           </span>
         </div>

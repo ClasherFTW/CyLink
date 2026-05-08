@@ -17,7 +17,7 @@ import {
 import { useAuth } from "../features/auth/AuthContext";
 import { useBookmarks } from "../features/bookmarks/BookmarksContext";
 import { useToast } from "../features/ui/ToastContext";
-import { useCitrusBot } from "../features/ai/CitrusBotContext";
+import { useCyLinkBot } from "../features/ai/CyLinkBotContext";
 import {
   deleteQuestion,
   getQuestionById,
@@ -32,7 +32,7 @@ function QuestionDetailPage() {
   const { questionId } = useParams();
   const { user } = useAuth();
   const { has: isBookmarked, toggle: toggleBookmark } = useBookmarks();
-  const { explainQuestion, askFreeform } = useCitrusBot();
+  const { explainQuestion, askFreeform } = useCyLinkBot();
   const toast = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -228,7 +228,7 @@ function QuestionDetailPage() {
                 NOT ZESTY
               </button>
               <button type="button" className="soft-action" onClick={handleExplainQuestion}>
-                Explain by Citrus
+                Explain by CyLink
               </button>
             </div>
           </div>

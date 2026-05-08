@@ -6,7 +6,7 @@ function ProtectedRoute() {
   const { user, isBootstrapping } = useAuth();
 
   if (isBootstrapping) {
-    return <Loader label="Checking your Citrus session" fullscreen />;
+    return <Loader label="Checking your CyLink session" fullscreen />;
   }
 
   if (!user) {

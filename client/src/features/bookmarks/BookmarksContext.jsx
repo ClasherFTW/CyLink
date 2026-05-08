@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 
 const BookmarksContext = createContext(null);
-const BOOKMARKS_KEY = "citrus_bookmarks";
+const BOOKMARKS_KEY = "CyLink_bookmarks";
 
 function readStore() {
   try {

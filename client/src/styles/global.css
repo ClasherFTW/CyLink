@@ -114,7 +114,6 @@ textarea {
 .brand-link {
   font-size: 1.2rem;
   font-family: var(--mono);
-  text-transform: lowercase;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
@@ -375,17 +374,17 @@ textarea {
 
 .landing-center {
   width: min(620px, calc(100% - 1.6rem));
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(10, 12, 14, 0.6);
   backdrop-filter: blur(5px);
-  border-radius: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.landing-center .border-glow-inner {
   padding: 1.3rem;
   display: grid;
   gap: 0.7rem;
   place-items: center;
   text-align: center;
-  position: relative;
-  z-index: 1;
 }
 
 .landing-center h1,

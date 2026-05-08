@@ -52,7 +52,7 @@ function AnswerList({
 
                   <div className="inline-actions compact">
                     <button type="button" className="soft-action" onClick={() => onExplain(question, answer)}>
-                      Explain by Citrus
+                      Explain by CyLink
                     </button>
 
                     {isOwner ? (

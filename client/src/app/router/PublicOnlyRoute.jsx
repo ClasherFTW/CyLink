@@ -6,7 +6,7 @@ function PublicOnlyRoute() {
   const { user, isBootstrapping } = useAuth();
 
   if (isBootstrapping) {
-    return <Loader label="Preparing Citrus" fullscreen />;
+    return <Loader label="Preparing CyLink" fullscreen />;
   }
 
   if (user) {

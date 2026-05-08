@@ -17,7 +17,7 @@ const startServer = async () => {
 
   server.listen(PORT, () => {
     // eslint-disable-next-line no-console
-    console.log(`Citrus backend running on port ${PORT}`);
+    console.log(`CyLink backend running on port ${PORT}`);
   });
 };
 

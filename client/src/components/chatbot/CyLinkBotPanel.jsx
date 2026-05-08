@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { askCitrusBotStream } from "../../features/ai/aiApi";
+import { askCyLinkBotStream } from "../../features/ai/aiApi";
 
-const STORAGE_KEY = "citrus_bot_threads";
+const STORAGE_KEY = "CyLink_bot_threads";
 
 function getThread(questionId) {
   try {
@@ -47,7 +47,7 @@ function getDefaultThread() {
   return [
     createMessage(
       "assistant",
-      "I am Citrus Bot. Ask Citrus anything about this question."
+      "I am CyLink Bot. Ask CyLink anything about this question."
     ),
   ];
 }
@@ -65,7 +65,7 @@ function normalizeThread(thread) {
   }));
 }
 
-function CitrusBotPanel({ questionId, post, selectedContext, onClearContext }) {
+function CyLinkBotPanel({ questionId, post, selectedContext, onClearContext }) {
   const [isOpen, setIsOpen] = useState(true);
   const [draft, setDraft] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -130,7 +130,7 @@ function CitrusBotPanel({ questionId, post, selectedContext, onClearContext }) {
 
     try {
       const payload = [
-        "Citrus context:",
+        "CyLink context:",
         postContext,
         selectedContext ? `Selected answer context:\n${selectedContext}` : "",
         `User prompt: ${prompt}`,
@@ -141,7 +141,7 @@ function CitrusBotPanel({ questionId, post, selectedContext, onClearContext }) {
       const abortController = new AbortController();
       activeRequestRef.current = abortController;
 
-      const data = await askCitrusBotStream({
+      const data = await askCyLinkBotStream({
         question: payload,
         useRetrieval: true,
         signal: abortController.signal,
@@ -180,8 +180,8 @@ function CitrusBotPanel({ questionId, post, selectedContext, onClearContext }) {
     } catch (requestError) {
       const isAborted = requestError?.name === "AbortError";
       const errorMessage = isAborted
-        ? "Citrus Bot request was cancelled."
-        : requestError.message || "Could not reach Citrus Bot.";
+        ? "CyLink Bot request was cancelled."
+        : requestError.message || "Could not reach CyLink Bot.";
 
       setError(errorMessage);
       setMessages((prev) =>
@@ -224,8 +224,8 @@ function CitrusBotPanel({ questionId, post, selectedContext, onClearContext }) {
   return (
     <aside className="bot-widget">
       <button type="button" className="bot-widget__trigger" onClick={() => setIsOpen((prev) => !prev)}>
-        <span>Citrus Bot</span>
-        <span className="ask-tag">ask citrus</span>
+        <span>CyLink Bot</span>
+        <span className="ask-tag">ask CyLink</span>
       </button>
 
       {isOpen ? (
@@ -266,7 +266,7 @@ function CitrusBotPanel({ questionId, post, selectedContext, onClearContext }) {
               rows={3}
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder="Ask Citrus about this issue"
+              placeholder="Ask CyLink about this issue"
               required
             />
 
@@ -282,4 +282,4 @@ function CitrusBotPanel({ questionId, post, selectedContext, onClearContext }) {
   );
 }
 
-export default CitrusBotPanel;
+export default CyLinkBotPanel;

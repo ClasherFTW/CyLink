@@ -2,7 +2,7 @@ const admin = require("firebase-admin");
 const path = require("path");
 const fs = require("fs");
 
-const SERVICE_ACCOUNT_FILENAME = "citrus-5589a-firebase-adminsdk-fbsvc-6f43e26d92.json";
+const SERVICE_ACCOUNT_FILENAME = "cylink-5589a-firebase-adminsdk-fbsvc-6f43e26d92.json";
 
 const buildCredential = () => {
   // Method 1: Load from service account JSON file on disk (highest priority)
